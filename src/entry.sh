@@ -15,6 +15,14 @@ function clean_up() {
 
 cd ${STEAMAPPDIR}
 
+if [ $AUTO_UPDATE]; then
+    steamcmd \
+	+force_install_dir "${STEAMAPPDIR}" \
+	+login ${STEAM_LOGIN} \
+	+app_update "${STEAMAPP_ID}" validate \
+	+quit
+fi
+
 # We assume that if the config is missing, that this is a fresh container
 if [ ! -f "${STEAM_SAVEDIR}/serverconfig.xml" ]; then
     cp "${STEAMAPPDIR}/serverconfig.xml" ${STEAM_SAVEDIR}
