@@ -1,26 +1,29 @@
+[![Docker Pulls](https://img.shields.io/docker/pulls/silentmecha/7dtd.svg)](https://hub.docker.com/r/silentmecha/7dtd)
+[![Image Size](https://img.shields.io/docker/image-size/silentmecha/7dtd/latest.svg)](https://hub.docker.com/r/silentmecha/7dtd)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-donate-success?logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/silent001)
+
 # silentmecha/7dtd
 
-This repository contains the files needed for the image silentmecha/7dtd:latest
+This repository contains the files needed to build and run a Docker image for a 7 Days to Die dedicated server. This image is built on Ubuntu and is specifically designed for quickly setting up a 7 Days to Die server. It uses a customized version of `steamcmd/steamcmd:ubuntu-24`, which includes additional programs, environment variables, and a dedicated USER account to ensure easy server creation and consistent configuration across instances. The image is optimized for streamlined deployment and management of **7 Days to Die** servers with all necessary dependencies and settings pre-configured.
+
+> **Warning:** The latest version on Docker Hub may be out of date. Please check the GitHub repository for the most recent updates.
+
+> **Note:** This image does not yet set all the settings for the server according to the ENV values. This is still a work in progress.
 
 ## Usage
 
-This stack uses an image from [atmoz](https://github.com/atmoz). To see more on the image used visit thier github [https://github.com/atmoz/sftp](https://github.com/atmoz/sftp).
+This stack uses an image from [atmoz](https://github.com/atmoz). To see more on the image used visit their GitHub [https://github.com/atmoz/sftp](https://github.com/atmoz/sftp).
 
-For more info on environment variabes and what they do see [Environment Variables](#environment-variables)
+For more info on environment variables and what they do see [Environment Variables](#environment-variables)
+
+### Available Tags
+
+- `base`: Contains only the environment setup, excluding the game files.
+- `latest`: Includes the game files needed for the server.
 
 ### Simplest Method
 
-The simplest usage for this is using the `docker-compose` method.
-
-```console
-git clone https://github.com/silentmecha/7dtd.git 7DaysToDie
-cd 7DaysToDie
-cp .env.example .env
-nano .env
-docker-compose up -d
-```
-
-### Without building the image locally
+The simplest usage for this is using the `docker-compose` method to pull the `latest` image and run it.
 
 ```console
 git clone https://github.com/silentmecha/7dtd.git 7DaysToDie
@@ -31,9 +34,40 @@ docker-compose pull
 docker-compose up -d
 ```
 
+### Using the `base` tag
+
+If you don't want to pull the entire image and don't need to keep multiple instances up to date, you can use the `base` tag.
+
+```console
+git clone https://github.com/silentmecha/7dtd.git 7DaysToDie
+cd 7DaysToDie
+cp .env.example .env
+nano .env
+docker-compose -f docker-compose.base.yml up -d
+```
+
+### Building Locally
+
+If you prefer to build everything locally, you can start by building the `base` image and then the `latest` image.
+
+```console
+git clone https://github.com/silentmecha/7dtd.git 7DaysToDie
+cd 7DaysToDie
+cp .env.example .env
+nano .env
+docker build -f base.Dockerfile -t silentmecha/7dtd:base -t silentmecha/7dtd:latest .
+docker build -f Dockerfile -t silentmecha/7dtd:latest .
+docker-compose up -d
+```
+
 ### Updating
 
-Updating is still currently in devolpment so once that is sorted this README will be updated. The idea is to allow an image to be updated without needing to either download the full image or rebuilding the image
+Updating is now as simple as running a build on the `Dockerfile` or using `docker-compose build`. This will update the image without downloading all the game files again.
+
+```console
+docker-compose build
+docker-compose up -d
+```
 
 ### Environment Variables
 
@@ -82,11 +116,10 @@ Currently the following ports are used.
 | SERVERPORT_2     | UDP  | 26902   |
 | SFT_PORT         | TCP  | 2222    |
 
-All these ports need to be forwarded through your router except for `TELNETPORT`, `CONTROLPANELPORT` and `SFT_PORT` unless you wish to externally Telnet into the server, externally use the web control panel or remotely edit the save data.
-
-## Notes
-Currently this is based off of Ubuntu 18.04 as there are known issues with steamcmd and Ubuntu 20.04. Once Ubuntu 20.04 is stable I will update the images
+All these ports must be forwarded through your router, except for `TELNETPORT`, `CONTROLPANELPORT`, and `SFT_PORT`, unless you want to access the server via Telnet, use the web control panel externally, or remotely edit the save data, respectively.
 
 ## License
 
-[MIT license](LICENSE)
+This project is licensed under the [MIT License](LICENSE).
+
+If you enjoy this project and would like to support my work, consider [buying me a coffee](https://www.buymeacoffee.com/silent001). Your support is greatly appreciated!
