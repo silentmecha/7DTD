@@ -1,4 +1,4 @@
-FROM silentmecha/7dtd:lastest
+FROM silentmecha/7dtd:latest
 
 ENV AUTO_UPDATE=False
 
